@@ -4,7 +4,14 @@ Raspberry Pi가 사람을 탐지해 카메라의 시선을 움직이고, PC의 �
 
 ![C++17](https://img.shields.io/badge/C%2B%2B-17-00599C) ![Raspberry Pi 4](https://img.shields.io/badge/Raspberry_Pi-4-A22846) ![OpenCV DNN](https://img.shields.io/badge/OpenCV-DNN-455A64) ![GStreamer](https://img.shields.io/badge/GStreamer-H.264-355C58) ![WebRTC](https://img.shields.io/badge/WebRTC-libdatachannel-365880) ![Qt 6](https://img.shields.io/badge/Qt-6_Widgets-286548)
 
-[개요](#project-overview) · [구성도](#system-architecture) · [기술 스택](#tech-stack) · [핵심 기능](#core-features) · [저장소](#repository-structure) · [기술 과제](#technical-challenges) · [시연](#demo)
+## Demo
+
+**Qt 관제 시연 · 1분 9초**  
+카메라 연결부터 라이브 영상의 사람 탐지, 자연어로 탐지 이력을 찾는 과정까지 볼 수 있습니다.
+
+https://github.com/user-attachments/assets/684be118-f6e6-48a7-941e-37718f191e6e
+
+[시연](#demo) · [개요](#project-overview) · [구성도](#system-architecture) · [기술 스택](#tech-stack) · [핵심 기능](#core-features) · [저장소](#repository-structure) · [기술 과제](#technical-challenges)
 
 ## Project Overview
 
@@ -25,6 +32,8 @@ flowchart LR
 ```
 
 **카메라 제어** · Qt와 웹에서 보낸 조작 명령은 모두 VMS를 거쳐 Pi에 도달하며, Pi는 수동 조작을 우선해 Pan·Tilt 서보를 움직입니다.
+
+Pi는 ONVIF 제어 요청을 Digest로 인증합니다. Pi에서 PC로 보내는 영상은 선택형 RTSPS 구성으로 수신·녹화하는 경로를 로컬에서 검증했습니다.
 
 <details>
 <summary>구현 상세 보기 · 영상 처리, 서보 제어, 네트워크 통신</summary>
@@ -101,12 +110,7 @@ Pi에서 소프트웨어 인코딩과 DNN 추론이 CPU를 공유하면서, 추�
 **상태 조회가 카메라 연결 해제로 표시되는 문제**  
 서보 서비스가 단순 상태 조회용 TCP 연결까지 송출기 연결로 취급해, 조회가 끝날 때 관제 화면에 연결 해제 이벤트를 보냈습니다. 송출기가 `CAMERA:HELLO`로 자신을 등록하도록 하고 `TRACK:STATUS`는 상태만 반환하도록 분리했습니다. [문제 재현과 확인 기록](https://github.com/PTZ-CAMERA/PTZ_CAMERA/blob/main/troubleshotting.md)
 
-## Demo
-
-**Qt 관제 시연 · 1분 9초**  
-카메라를 검색해 RTSP 라이브를 열고, 사람이 화면에 들어오면 탐지 상자가 표시되는 장면을 볼 수 있습니다. 이어서 자연어로 탐지 이력을 조회하고 시간순 결과를 확인합니다.
-
-https://github.com/user-attachments/assets/684be118-f6e6-48a7-941e-37718f191e6e
+## Screenshots
 
 **관제 화면 예시** · 기존 VMS 저장소에 보관된 이전 UI입니다. 중앙의 영상과 오른쪽 Pan·Tilt 조작부, 하단의 ONVIF 장치 정보를 볼 수 있습니다.
 
