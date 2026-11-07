@@ -1,5 +1,7 @@
 # PTZ Camera & Video Management System
 
+**개인 프로젝트** · Raspberry Pi 기반 사람 추적 카메라와 영상 관제 시스템
+
 Raspberry Pi가 사람을 탐지해 카메라의 시선을 움직이고, PC의 영상 관제 서버가 그 순간의 영상과 탐지 이력을 연결합니다.
 
 ![C++17](https://img.shields.io/badge/C%2B%2B-17-00599C) ![Raspberry Pi 4](https://img.shields.io/badge/Raspberry_Pi-4-A22846) ![OpenCV DNN](https://img.shields.io/badge/OpenCV-DNN-455A64) ![GStreamer](https://img.shields.io/badge/GStreamer-H.264-355C58) ![WebRTC](https://img.shields.io/badge/WebRTC-libdatachannel-365880) ![Qt 6](https://img.shields.io/badge/Qt-6_Widgets-286548)
