@@ -26,10 +26,13 @@ Qt 데스크톱은 카메라 영상을 Raspberry Pi에서 직접 받고, 웹 브
 ```mermaid
 flowchart LR
     cam["Pi Camera"] --> pi["Raspberry Pi<br/>영상 송출 · 사람 추적"]
-    pi -->|"RTSP"| qt["Qt 데스크톱"]
-    pi -->|"RTSP"| vms["Mini VMS<br/>녹화 · 탐지 이력"]
+    pi -->|"직접 RTSP"| qt["Qt 데스크톱"]
+    pi -->|"RTSP 영상"| vms["Mini VMS<br/>녹화 · 탐지 이력<br/>자연어 검색"]
+    pi -.->|"ONVIF 탐지 이벤트"| vms
     vms -->|"WebRTC"| web["웹 브라우저"]
 ```
+
+> **“어제 오후에 사람이 감지된 장면 찾아줘”** → VMS가 질문을 검색 조건으로 바꿔 탐지 이력을 조회합니다. 해당 시각에 완료된 녹화가 있으면 Qt에서 그 지점부터 재생할 수 있습니다.
 
 **카메라 제어** · Qt와 웹에서 보낸 조작 명령은 모두 VMS를 거쳐 Pi에 도달하며, Pi는 수동 조작을 우선해 Pan·Tilt 서보를 움직입니다.
 
