@@ -13,7 +13,7 @@ Raspberry Pi가 사람을 탐지해 카메라의 시선을 움직이고, PC의 �
 
 https://github.com/user-attachments/assets/684be118-f6e6-48a7-941e-37718f191e6e
 
-[시연](#demo) · [개요](#project-overview) · [구성도](#system-architecture) · [기술 스택](#tech-stack) · [핵심 기능](#core-features) · [저장소](#repository-structure) · [기술 과제](#technical-challenges)
+[시연](#demo) · [개요](#project-overview) · [구성도](#system-architecture) · [기술 스택](#tech-stack) · [핵심 기능](#core-features) · [저장소](#repository-structure)
 
 ## Project Overview
 
@@ -103,17 +103,6 @@ flowchart TB
 | [PTZ_VMS_Server](https://github.com/PTZ-CAMERA/PTZ_VMS_Server) | 카메라 연결, 클라이언트 제어, 영상·이력 관리 | `src/stream` RTSP, `src/webrtc` 브라우저 송출, `src/recording` 녹화, `src/chat` 자연어 검색 |
 | [PTZ_WEB_Client](https://github.com/PTZ-CAMERA/PTZ_WEB_Client) | 브라우저 관제 화면 | `assets/js/native-webrtc.js` 미디어 수신, `assets/js/vms-workspace.js` 카메라 등록·녹화·검색 |
 | [Qt_Client](https://github.com/PTZ-CAMERA/Qt_Client) | 직접 RTSP 라이브와 녹화 재생을 제공하는 데스크톱 관제 화면 | `PTZCamera/network` VMS 통신, `camera` 영상 표시, `ui` PTZ 입력, `playback` 녹화 재생 |
-
-## Technical Challenges
-
-**늦게 도착한 탐지 결과로 서보가 움직이는 문제**  
-Pi에서 소프트웨어 인코딩과 DNN 추론이 CPU를 공유하면서, 추론이 끝났을 때 이미 대상이 이동한 프레임이 생겼습니다. 분석용 GStreamer 큐와 `appsink`를 각각 한 프레임으로 제한해 오래된 입력을 버리고, 추적 제어 단계에서도 허용 나이를 넘긴 결과를 폐기합니다. [진단 기록](https://github.com/PTZ-CAMERA/PTZ_CAMERA/blob/main/troubleshotting.md) · [캡처 파이프라인](https://github.com/PTZ-CAMERA/PTZ_CAMERA/blob/main/pi/camera_stream/src/camera/capture_manager.cpp) · [추적 제어](https://github.com/PTZ-CAMERA/PTZ_CAMERA/blob/main/pi/camera_stream/src/tracking/tracking_controller.cpp)
-
-**녹화 큐가 넘친 뒤 재생 가능한 구간을 만드는 문제**  
-쓰기 지연으로 패킷이 누락되면 다음 H.264 프레임이 앞선 프레임을 참조할 수 있습니다. VMS는 현재 녹화 구간을 마무리하고 다음 keyframe에서 새 구간을 시작합니다. 이 경계 덕분에 새 파일의 첫 장면을 독립적으로 디코딩할 수 있습니다. [RecordingManager](https://github.com/PTZ-CAMERA/PTZ_VMS_Server/blob/main/src/recording/RecordingManager.cpp)
-
-**상태 조회가 카메라 연결 해제로 표시되는 문제**  
-서보 서비스가 단순 상태 조회용 TCP 연결까지 송출기 연결로 취급해, 조회가 끝날 때 관제 화면에 연결 해제 이벤트를 보냈습니다. 송출기가 `CAMERA:HELLO`로 자신을 등록하도록 하고 `TRACK:STATUS`는 상태만 반환하도록 분리했습니다. [문제 재현과 확인 기록](https://github.com/PTZ-CAMERA/PTZ_CAMERA/blob/main/troubleshotting.md)
 
 ## Screenshots
 
