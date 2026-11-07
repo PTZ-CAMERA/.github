@@ -14,6 +14,21 @@ PC의 Mini VMS(Video Management System)는 같은 카메라에서 H.264 영상�
 
 ## System Architecture
 
+Qt 데스크톱은 카메라 영상을 Raspberry Pi에서 직접 받고, 웹 브라우저는 관제 서버를 통해 받습니다.
+
+```mermaid
+flowchart LR
+    cam["Pi Camera"] --> pi["Raspberry Pi<br/>영상 송출 · 사람 추적"]
+    pi -->|"RTSP"| qt["Qt 데스크톱"]
+    pi -->|"RTSP"| vms["Mini VMS<br/>녹화 · 탐지 이력"]
+    vms -->|"WebRTC"| web["웹 브라우저"]
+```
+
+**카메라 제어** · Qt와 웹에서 보낸 조작 명령은 모두 VMS를 거쳐 Pi에 도달하며, Pi는 수동 조작을 우선해 Pan·Tilt 서보를 움직입니다.
+
+<details>
+<summary>구현 상세 보기 · 영상 처리, 서보 제어, 네트워크 통신</summary>
+
 ```mermaid
 flowchart TB
     subgraph Edge["Raspberry Pi 4"]
@@ -42,6 +57,8 @@ flowchart TB
 ```
 
 **Qt 라이브**는 VMS의 `direct-stream` API에서 카메라 URI를 얻은 뒤 Pi에 직접 접속합니다. **웹 라이브**는 VMS와 WebSocket으로 SDP를 교환하고, 브라우저의 `RTCPeerConnection`으로 영상을 받습니다. 웹 모듈의 Node.js 서버는 HTML·CSS·JavaScript를 제공합니다. [Qt 연결 코드](https://github.com/PTZ-CAMERA/Qt_Client/blob/main/PTZCamera/network/VmsClient.cpp) · [웹 수신 코드](https://github.com/PTZ-CAMERA/PTZ_WEB_Client/blob/main/assets/js/native-webrtc.js)
+
+</details>
 
 ## Tech Stack
 
